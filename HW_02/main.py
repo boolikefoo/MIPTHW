@@ -106,7 +106,12 @@ def web_parser_links():
                 session.add(data)
             except Exception as e:
                 print(f'Произошла ошибка: {e}')
-        session.commit()
+        try:
+            session.commit()
+            print('Данные успешно записаны в базу данных')
+        except Exception as e:
+            print(f'Произошла ошибка при попытке записи данных: {e}')
+
         session.close()
         engine.dispose()
 
@@ -154,8 +159,13 @@ def api_parsing():
                 sleep(0.2)
                 session.add(vacancy)
             except Exception as e:
-                print(f'Произошла ошибка: {e}')
-        session.commit()
+                print(f'Произошла ошибка: {e}')       
+        try:
+            session.commit()
+            print('Данные успешно записаны в базу данных')
+        except Exception as e:
+            print(f'Произошла ошибка при попытке записи данных: {e}')
+
         session.close()
         engine.dispose()
 
