@@ -169,6 +169,7 @@ def api_parsing():
         session.close()
         engine.dispose()
 
+
 # Функция парсинга вакансии через AIP
 def api_parsing_vacancies(url):
     vacancy = parse_data(url, user_agent, url_params, mod='api')
