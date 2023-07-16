@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from time import sleep
+from tqdm import tqdm
 
 
 # Функция выбора режима парсинга
@@ -99,10 +100,14 @@ def web_parser_links():
 
     with Session(engine) as session:
 
-        for link in links:
-            data = web_parser_page(link.attrs.get('href'))
-            session.add(data)
+        for link in tqdm(links):
+            try:
+                data = web_parser_page(link.attrs.get('href'))
+                session.add(data)
+            except Exception as e:
+                print(f'Произошла ошибка: {e}')
         session.commit()
+        session.close()
         engine.dispose()
 
 
@@ -143,12 +148,16 @@ def api_parsing():
     data = data.get('items')
 
     with Session(engine) as session:
-        for link in data:
-            vacancy = api_parsing_vacancies(link['url'])
-            sleep(0.2)
-            session.add(vacancy)
+        for link in tqdm(data):
+            try:
+                vacancy = api_parsing_vacancies(link['url'])
+                sleep(0.2)
+                session.add(vacancy)
+            except Exception as e:
+                print(f'Произошла ошибка: {e}')
         session.commit()
-
+        session.close()
+        engine.dispose()
 
 # Функция парсинга вакансии через AIP
 def api_parsing_vacancies(url):
