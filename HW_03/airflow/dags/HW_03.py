@@ -182,6 +182,16 @@ def run_vacancies_parsing():
             logging.error(f'Сервер вернул ошибку: {result.status_code}')
 
 
+# Функция выбора вакансий телеком компаний
+def run_sort_vacancies();
+    pass
+
+
+# функция определения ключевых навыков
+def run_top_key_skills():
+    pass
+
+
 with DAG(
     dag_id='MIPT_FINAL_HW_2',
     default_args=default_args,
@@ -211,7 +221,17 @@ with DAG(
         python_callcable=run_vacancies_parsing 
     )
 
+    sort_vacancies = PythonOperator(
+        task_id='sort_vacancies'
+        python_callable=run_sort_vacancies 
+    )
+
+    top_key_skills = PythonOperator(
+        task_id='top_key_skills'
+        python_callable=run_top_key_skills
+    )
+
 
     create_tables >> data_downloading >> extract_okved
-    vacancies_parsing >> 
+    vacancies_parsing >> sort_vacancies >> top_key_skills
 
