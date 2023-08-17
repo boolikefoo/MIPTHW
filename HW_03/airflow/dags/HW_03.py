@@ -1,5 +1,6 @@
 # импортируем библиотеки
-from datetime import datetime, timedelta, sleep
+from datetime import datetime, timedelta
+from time import sleep
 import logging
 import requests
 from airflow import DAG
@@ -177,13 +178,13 @@ def run_vacancies_parsing():
         result = requests.get(url, headers=user_agent, params=url_params)
         if result.status_code == 200:
             data = result.json()
-            return data            
+            return data      
         else:
             logging.error(f'Сервер вернул ошибку: {result.status_code}')
 
 
 # Функция выбора вакансий телеком компаний
-def run_sort_vacancies();
+def run_sort_vacancies():
     pass
 
 
@@ -197,12 +198,12 @@ with DAG(
     default_args=default_args,
     description='This is final home work',
     start_date=datetime(2023, 8, 11),
-    schedule_interval='@daily
+    schedule_interval='@daily'
 ) as dag:
 
     # Загружаем файл егрюл и разархиваруем данные
     create_tables = PythonOperator(
-        task_id='create_tables'
+        task_id='create_tables',
         python_callable=run_create_db 
     )
 
@@ -212,26 +213,24 @@ with DAG(
     )
 
     extract_okved = PythonOperator(
-        task_id='extract_okved'
-        python_callable=run_extract_okved 
+        task_id='extract_okved',
+        python_callable=run_extract_okved
     )
 
-    vacancies_parsing= PythonOperator(
-        task_id='vacancies_parsing'
-        python_callcable=run_vacancies_parsing 
+    vacancies_parsing = PythonOperator(
+        task_id='vacancies_parsing',
+        python_callable=run_vacancies_parsing
     )
 
     sort_vacancies = PythonOperator(
-        task_id='sort_vacancies'
-        python_callable=run_sort_vacancies 
+        task_id='sort_vacancies',
+        python_callable=run_sort_vacancies
     )
 
     top_key_skills = PythonOperator(
-        task_id='top_key_skills'
+        task_id='top_key_skills',
         python_callable=run_top_key_skills
     )
 
-
-    create_tables >> data_downloading >> extract_okved
-    vacancies_parsing >> sort_vacancies >> top_key_skills
-
+    create_tables >> data_downloading >> extract_okved >> vacancies_parsing >> sort_vacancies >> top_key_skills
+    
